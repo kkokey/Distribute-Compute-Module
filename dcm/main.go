@@ -1,23 +1,21 @@
 package main
 
 import (
+	"kkokey/distribute-compute-module/dcm/core/daemon"
+
 	"fmt"
 	"time"
 )
 
 func main() {
-
 	msg := make(chan string)
 	for {
-		go daemonRunner(msg)
+		go daemon.Runner(msg)
 		time.Sleep(time.Second * 2)
+
+		daemon.PrintMemUsage()
 
 		msgReceiver := <-msg
 		fmt.Println(msgReceiver)
 	}
-}
-
-func daemonRunner(msg chan string) {
-
-	msg <- "daemon running..."
 }
