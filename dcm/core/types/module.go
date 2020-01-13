@@ -2,22 +2,46 @@ package types
 
 import (
 	"errors"
+	"fmt"
 	"net"
+	"sync"
 )
 
 type DistributeModule struct {
 	IPAddr net.IP
 }
 
-func NewModule() *DistributeModule {
-	ip, err := DistributeModule.findLocalIP(DistributeModule{IPAddr: nil})
-	if err != nil {
-		return &DistributeModule{IPAddr: nil}
-	}
-	return &DistributeModule{ip}
+var instance *DistributeModule
+var once sync.Once
+
+func GetModule() *DistributeModule {
+	return getRunningModuleInstance()
 }
 
-func (m DistributeModule) findLocalIP() (net.IP, error) {
+func getRunningModuleInstance() *DistributeModule {
+	ip, err := findLocalIP()
+	if err != nil {
+		ip = nil
+	}
+	setLocalIP(ip)
+
+	return instance
+}
+
+func setLocalIP(ip net.IP) {
+	if instance == nil {
+		once.Do(func() {
+			instance = &DistributeModule{IPAddr: ip}
+			fmt.Print("once.Do\n")
+		})
+	}
+	if instance.IPAddr.String() == ip.String() {
+		return
+	}
+	instance.IPAddr = ip
+}
+
+func findLocalIP() (net.IP, error) {
 	interfaces, err := net.Interfaces()
 	if err != nil {
 		return nil, err

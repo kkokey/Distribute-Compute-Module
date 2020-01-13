@@ -19,9 +19,7 @@ func TestCreatesModule(t *testing.T) {
 }
 
 func TestGetsMyIPSuccess(t *testing.T) {
-	var module DistributeModule
-
-	userLocalIP, err := module.findLocalIP()
+	userLocalIP, err := findLocalIP()
 	if err != nil {
 		t.Errorf("Can not find IP Error Message: [%q]", err.Error())
 	} else {
