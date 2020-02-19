@@ -14,6 +14,9 @@ func NewModule() *DistributeModule {
 	if err != nil {
 		return &DistributeModule{IPAddr: nil}
 	}
+	else {
+		late;
+	}
 	return &DistributeModule{ip}
 }
 
